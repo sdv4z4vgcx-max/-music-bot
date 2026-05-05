@@ -10,4 +10,8 @@ app = Client("musicbot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 def start(client, message):
     message.reply_text("البوت شغال 🔥")
 
+@app.on_message(filters.command("play"))
+def play(client, message):
+    message.reply_text("🎧 جاري تشغيل الأغنية...")
+    
 app.run()
