@@ -8,23 +8,21 @@ app = Client("musicbot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
 @app.on_message(filters.command("start"))
 def start(client, message):
-    message.reply_text("البوت شغال 🔥")
+    message.reply_text("🔎 جاري البحث عن الأغنية...")
 
-import os
-import yt_dlp
-
-@app.on_message(filters.command("play"))
+@app.on_message(filters.regex("^(تشغيل|شغل|play|اغنية)"))
 def play(client, message):
     try:
+        # نحذف كلمة الأمر ونجيب اسم الأغنية
         query = message.text.split(" ", 1)[1]
     except:
-        message.reply_text("❗ اكتب اسم الأغنية بعد الأمر\nمثال: /play wail kfoury")
+        message.reply_text("❗ اكتب اسم الأغنية بعد الأمر\nمثال: تشغيل وائل كفوري")
         return
 
     message.reply_text("🔎 جاري البحث عن الأغنية...")
 
     ydl_opts = {
-        'format': 'bestaudio/best',
+        'format': 'bestaudio',
         'outtmpl': 'song.%(ext)s',
         'quiet': True
     }
@@ -34,11 +32,12 @@ def play(client, message):
             info = ydl.extract_info(f"ytsearch:{query}", download=True)
             file = ydl.prepare_filename(info['entries'][0])
 
-        message.reply_audio(audio=file, caption="🎧 تم تشغيل الأغنية")
+        message.reply_document(file, caption="🎧 تم تحميل الأغنية")
 
         os.remove(file)
 
     except Exception as e:
-        message.reply_text("❌ صار خطأ أثناء تحميل الأغنية")
-    
+        print(e)
+        message.reply_text("❌ فشل تحميل الأغنية")
+
 app.run()
