@@ -8,36 +8,42 @@ app = Client("musicbot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
 @app.on_message(filters.command("start"))
 def start(client, message):
-    message.reply_text("🔎 جاري البحث عن الأغنية...")
-
-@app.on_message(filters.regex("^(تشغيل|شغل|play|اغنية)"))
+    message.reply_text("🔎 جاري البحث عن @app.on_message(filters.regex("^(تشغيل|شغل|play|اغنية)"))
 def play(client, message):
-    try:
-        # نحذف كلمة الأمر ونجيب اسم الأغنية
-        query = message.text.split(" ", 1)[1]
-    except:
+    text = message.text.strip()
+
+    # حذف الكلمة الأولى (تشغيل / شغل / ...)
+    parts = text.split(" ", 1)
+    if len(parts) < 2:
         message.reply_text("❗ اكتب اسم الأغنية بعد الأمر\nمثال: تشغيل وائل كفوري")
         return
 
-    message.reply_text("🔎 جاري البحث عن الأغنية...")
+    query = parts[1]
+
+    msg = message.reply_text("🔎 جاري البحث عن الأغنية...")
 
     ydl_opts = {
         'format': 'bestaudio',
         'outtmpl': 'song.%(ext)s',
-        'quiet': True
+        'quiet': True,
+        'noplaylist': True
     }
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(f"ytsearch:{query}", download=True)
+            info = ydl.extract_info(f"ytsearch1:{query}", download=True)
             file = ydl.prepare_filename(info['entries'][0])
 
-        message.reply_document(file, caption="🎧 تم تحميل الأغنية")
+        msg.edit("📥 جاري إرسال الأغنية...")
+
+        message.reply_document(file, caption=f"🎧 {query}")
 
         os.remove(file)
 
+        msg.delete()
+
     except Exception as e:
         print(e)
-        message.reply_text("❌ فشل تحميل الأغنية")
+        msg.edit("❌ فشل تحميل الأغنية، جرّب اسم أوضح")
 
 app.run()
