@@ -8,7 +8,9 @@ app = Client("musicbot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
 @app.on_message(filters.command("start"))
 def start(client, message):
-    message.reply_text("🔎 جاري البحث عن @app.on_message(filters.regex("^(تشغيل|شغل|play|اغنية)"))
+    message.reply_text("🔎 جاري البحث عن الاغنية ...")
+    
+    app.on_message(filters.regex("^(تشغيل|شغل|play|اغنية)
 def play(client, message):
     text = message.text.strip()
 
