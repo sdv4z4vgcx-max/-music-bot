@@ -10,7 +10,7 @@ app = Client("musicbot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 def start(client, message):
     message.reply_text("🔎 جاري البحث عن الاغنية ...")
     
-    app.on_message(filters.regex("^(تشغيل|شغل|play|اغنية)
+    @app.on_message(filters.regex(r"^(أغنية|play|تشغيل|شغل)"))
 def play(client, message):
     text = message.text.strip()
 
